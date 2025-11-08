@@ -201,3 +201,26 @@ city_prop_results
 
 **Comments**: For each city we used `prop.test` to estimate the proportion of unsolved homicides and its 95% CI. One city produced a warning that the chi-squared approximation may be inaccurate due to small counts.
 
+```{r}
+# make the plot
+city_prop_results %>%
+  mutate(
+    city_state = fct_reorder(city_state, prop_unsolved)
+    ) %>%
+  ggplot(aes(x = city_state, y = prop_unsolved)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf_low, ymax = conf_high),
+                width = 0) +
+  coord_flip() +
+  labs(
+    x = "City",
+    y = "Proportion of homicides unsolved",
+    title = "Estimated proportion of unsolved homicides and 95% CIs by city"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 6),         
+    panel.grid.major.y = element_blank(),         
+    panel.grid.minor = element_blank()
+  )
+```
