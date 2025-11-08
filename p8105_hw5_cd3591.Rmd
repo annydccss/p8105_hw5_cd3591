@@ -46,4 +46,30 @@ birthday_sim_results %>%
 
 **Comments**: The plot and table show that the probability of at least one shared birthday is essentially zero for very small groups, but increases rapidly as `n_people` increases. In specific, when `n_people` = ~23, the estimated probability is about 0.50, meaning a shared birthday is already more likely than not. By `n_people` = ~35, the probability exceeds 0.80, and by `n_people` = ~45 it is above 0.94; at `n_people` = ~50, the probability is roughly 0.97. This indicates that even though there are 365 possible birthdays, only a relatively small group is needed for a high likelihood of shared birthdays.
 
+# Problem 2
+```{r}
+set.seed(8105)
 
+# function to simulate 1-sample t-tests for a given true mean mu
+simulate_t_tests <- function(mu, n = 30, sigma = 5, n_sim = 5000) {
+  tibble(sim = 1:n_sim) |>
+    mutate(
+      x = map(sim, ~ rnorm(n, mean = mu, sd = sigma)),
+      t_stats   = map(x, ~ t.test(.x, mu = 0)),
+      tidy_output = map(t_stats, broom::tidy)
+    ) %>%
+    unnest(tidy_output) %>%
+    transmute(
+      mu_true = mu,
+      sim,
+      estimate,              
+      p_value = p.value
+    )
+}
+
+# Repeat the above for μ={1,2,3,4,5,6}
+results_list = lapply(0:6, simulate_t_tests)   
+sim_results = bind_rows(results_list)   
+
+
+```
