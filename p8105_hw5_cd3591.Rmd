@@ -159,7 +159,7 @@ homicide_city_summary
 ```
 
 ```{r}
-# For the city of Baltimore, MD
+# for the city of Baltimore, MD
 baltimore_summary = homicide_city_summary %>%
   filter(city_state == "Baltimore, MD")
 
@@ -175,4 +175,29 @@ baltimore_test
 ```
 
 ```{r}
+# for each of the cities
+city_prop_results =
+  homicide_city_summary %>%
+  mutate(
+    prop_test = map2(
+      unsolved_homicides,
+      total_homicides,
+      ~ prop.test(x = .x, n = .y)
+    ),
+    prop_tidy = map(prop_test, broom::tidy)
+  ) %>%
+  unnest(prop_tidy) %>%
+  select(
+    city_state,
+    total_homicides,
+    unsolved_homicides,
+    prop_unsolved = estimate,
+    conf_low = conf.low,
+    conf_high = conf.high
+  )
+
+city_prop_results
 ```
+
+**Comments**: For each city we used `prop.test` to estimate the proportion of unsolved homicides and its 95% CI. One city produced a warning that the chi-squared approximation may be inaccurate due to small counts.
+
