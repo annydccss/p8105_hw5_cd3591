@@ -52,7 +52,7 @@ set.seed(8105)
 
 # function to simulate 1-sample t-tests for a given true mean mu
 simulate_t_tests <- function(mu, n = 30, sigma = 5, n_sim = 5000) {
-  tibble(sim = 1:n_sim) |>
+  tibble(sim = 1:n_sim) %>%
     mutate(
       x = map(sim, ~ rnorm(n, mean = mu, sd = sigma)),
       t_stats   = map(x, ~ t.test(.x, mu = 0)),
@@ -71,5 +71,28 @@ simulate_t_tests <- function(mu, n = 30, sigma = 5, n_sim = 5000) {
 results_list = lapply(0:6, simulate_t_tests)   
 sim_results = bind_rows(results_list)   
 
+# the power of the test vs true mean
+power_results =
+  sim_results %>%
+  group_by(mu_true) %>%
+  summarize(
+    power = mean(p_value < 0.05),
+    .groups = "drop"
+  )
 
+power_results
+
+# make a plot
+power_results %>%
+  ggplot(aes(x = mu_true, y = power)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    x = "True mean (μ)",
+    y = "Power",
+    title = "Power of one-sample t-test (n = 30, σ = 5, α = 0.05)"
+  ) +
+  theme_minimal()
 ```
+
+**Comments**: Power increases as the effect size (the true mean μ moving away from 0) increases. In specific, when the true mean = 0, the rejection rate is about 0.05 (equals the type I error). As the true mean grows to 1, 2, and 3, power rises to roughly 0.20, 0.55, and 0.88, and by true mean ≥ 4, the test almost always rejects the null. 
