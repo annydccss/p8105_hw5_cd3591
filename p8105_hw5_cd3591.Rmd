@@ -7,10 +7,10 @@ output: github_document
 
 Problem 1
 ```{r}
+# Write a function to check whether there are duplicate birthdays in the group; and return TRUE or FALSE based on the result.
 birthday_shared = function(n_people){
   birthdays = sample(1:365, n_people, replace = TRUE)
   any(duplicated(birthdays))
 }
-
 
 ```
