@@ -5,6 +5,11 @@ date: "2025-11-07"
 output: github_document
 ---
 
+```{r}
+# set up libraries
+library("tidyverse")
+```
+
 Problem 1
 ```{r}
 # Write a function to check whether there are duplicate birthdays in the group; and return TRUE or FALSE based on the result.
@@ -13,7 +18,7 @@ birthday_shared = function(n_people){
   any(duplicated(birthdays))
 }
 
-# simulate 10000 times and calculate the mean
+# simulate 10000 times and calculate the prob
 set.seed(1122)
 birthday_sim_results =
   tibble(n_people = 2:50) %>% # for each group size between 2 and 50
@@ -21,7 +26,7 @@ birthday_sim_results =
     prob_shared = map_dbl(n_people,
       ~ mean(replicate(10000, birthday_shared(.x))) # run this function 10000 times & averaging across the 10000 simulation runs
     )
-  )
+  ) %>% knitr::kable()
 
 birthday_sim_results
 
