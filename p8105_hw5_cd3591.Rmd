@@ -96,3 +96,41 @@ power_results %>%
 ```
 
 **Comments**: Power increases as the effect size (the true mean μ moving away from 0) increases. In specific, when the true mean = 0, the rejection rate is about 0.05 (equals the type I error). As the true mean grows to 1, 2, and 3, power rises to roughly 0.20, 0.55, and 0.88, and by true mean ≥ 4, the test almost always rejects the null. 
+
+```{r}
+# make a table for average estimate for all samples and mean estimate only in samples for which the null was rejected 
+mean_results =
+  sim_results %>%
+  group_by(mu_true) %>%
+  summarize(
+    mean_estimate = mean(estimate),
+    mean_estimate_reject = mean(estimate[p_value < 0.05]),
+    .groups = "drop"
+  )
+
+mean_results
+
+# plot 1: average estimate using ALL samples
+ggplot(mean_results, aes(x = mu_true, y = mean_estimate)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    x = "True mean (μ)",
+    y = "Average estimate (all samples)",
+    title = "Average estimate vs. true mean (all tests)"
+  ) +
+  theme_minimal()
+
+# plot 2: average estimate using ONLY significant results
+ggplot(mean_results, aes(x = mu_true, y = mean_estimate_reject)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    x = "True mean (μ)",
+    y = "Average estimate (p < 0.05 only)",
+    title = "Average estimate vs. true mean (significant tests only)"
+  ) +
+  theme_minimal()
+```
+**Answer**: No. the sample average of μ_hat among tests where the null is rejected is not approximately equal to the true μ. Based on the graphs above, in the first plot (all tests), the points form an almost straight line on top of the 45° line: the average estimate closely matches the true mean μ, so μ_hat is approximately unbiased overall. However, in the second plot (significant tests only), the points lie clearly above the 45° line for smaller and moderate values of μ; for example, when μ=1 or 2, the average estimate among rejected tests is much larger than the true value. This happens because we only keep samples with p<0.05, i.e., those where μ_hat is far from 0 in the direction of the true effect. 
+
