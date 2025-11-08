@@ -13,4 +13,17 @@ birthday_shared = function(n_people){
   any(duplicated(birthdays))
 }
 
+# simulate 10000 times and calculate the mean
+set.seed(1122)
+birthday_sim_results =
+  tibble(n_people = 2:50) %>% # for each group size between 2 and 50
+  mutate(
+    prob_shared = map_dbl(n_people,
+      ~ mean(replicate(10000, birthday_shared(.x))) # run this function 10000 times & averaging across the 10000 simulation runs
+    )
+  )
+
+birthday_sim_results
+
+
 ```
