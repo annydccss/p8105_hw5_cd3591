@@ -26,9 +26,20 @@ birthday_sim_results =
     prob_shared = map_dbl(n_people,
       ~ mean(replicate(10000, birthday_shared(.x))) # run this function 10000 times & averaging across the 10000 simulation runs
     )
-  ) %>% knitr::kable()
+  )
 
 birthday_sim_results
 
+# make a plot
+birthday_sim_results %>%
+  ggplot(aes(x = n_people, y = prob_shared)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    x = "Group size",
+    y = "Estimated P(at least one shared birthday)",
+    title = "Birthday problem simulation (10,000 runs per n_people)"
+  ) +
+  theme_minimal()
 
 ```
