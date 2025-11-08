@@ -159,6 +159,7 @@ homicide_city_summary
 ```
 
 ```{r}
+# For the city of Baltimore, MD
 baltimore_summary = homicide_city_summary %>%
   filter(city_state == "Baltimore, MD")
 
@@ -171,4 +172,7 @@ baltimore_test = prop.test(
   select(estimate, conf.low, conf.high)
 
 baltimore_test
+```
+
+```{r}
 ```
