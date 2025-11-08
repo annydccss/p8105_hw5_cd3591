@@ -140,3 +140,20 @@ homicide_raw = read_csv("homicide-data.csv")
 ```
 **Description** of the raw data: The dataset contains one row per homicide in 50 large U.S. cities from 2007–2017 so that each homicide has its unique uid. Key variables include the victim’s name (`victim_last` + `victim_first`), `victim_race`, `victim_sex`, and `victim_age`; the `city` and `state` that the homicides happened; the `reported_date` and location (`lat` + `lon`); and the case `disposition` (e.g., “Closed by arrest”, “Closed without arrest”, “Open/No arrest”). 
 
+```{r}
+# tidy the raw data and create the data frame as required
+homicide_city_summary =
+  homicide_raw %>%
+  mutate(
+    city_state = str_c(city, ", ", state),
+    unsolved = disposition %in% c("Closed without arrest", "Open/No arrest")
+  ) %>%
+  group_by(city_state) %>%
+  summarize(
+    total_homicides = n(),
+    unsolved_homicides = sum(unsolved),
+    .groups = "drop"
+  )
+
+homicide_city_summary
+```
