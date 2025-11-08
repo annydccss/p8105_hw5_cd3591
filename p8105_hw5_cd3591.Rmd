@@ -201,7 +201,7 @@ city_prop_results
 
 **Comments**: For each city we used `prop.test` to estimate the proportion of unsolved homicides and its 95% CI. One city produced a warning that the chi-squared approximation may be inaccurate due to small counts.
 
-```{r}
+```{r homicide_plot, fig.width = 7, fig.height = 6}
 # make the plot
 city_prop_results %>%
   mutate(
@@ -219,7 +219,7 @@ city_prop_results %>%
   ) +
   theme_minimal() +
   theme(
-    axis.text.y = element_text(size = 6),         
+    axis.text.y = element_text(size = 7),         
     panel.grid.major.y = element_blank(),         
     panel.grid.minor = element_blank()
   )
