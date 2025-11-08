@@ -5,3 +5,12 @@ date: "2025-11-07"
 output: github_document
 ---
 
+Problem 1
+```{r}
+birthday_shared = function(n_people){
+  birthdays = sample(1:365, n_people, replace = TRUE)
+  any(duplicated(birthdays))
+}
+
+
+```
